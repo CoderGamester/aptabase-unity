@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AptabaseSDK.TinyJson;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace AptabaseSDK
     public class Dispatcher: IDispatcher
     {
         private const string EVENTS_ENDPOINT = "/api/v0/events";
+        private const string APTDABASE_KEY = "AptabaseKey";
         
         private const int MAX_BATCH_SIZE = 25;
         
@@ -22,7 +24,7 @@ namespace AptabaseSDK
         public Dispatcher(string appKey, string baseURL, EnvironmentInfo env)
         {
             //create event queue
-            _events = new Queue<Event>();
+            _events = new Queue<Event>(PlayerPrefs.GetString("AptabaseEvents").FromJson<List<Event>>() ?? new List<Event>());
             
             //web request setup information
             _apiURL = $"{baseURL}{EVENTS_ENDPOINT}";
@@ -42,7 +44,7 @@ namespace AptabaseSDK
                 _events.Enqueue(eventData);
         }
 
-        public async void Flush()
+        public async Task Flush()
         {
             if (_flushInProgress || _events.Count <= 0)
                 return;
@@ -75,7 +77,14 @@ namespace AptabaseSDK
 
             _flushInProgress = false;
         }
-        
+
+        public async void FlushOrSaveToDisk()
+        {
+            await Flush();
+            
+            PlayerPrefs.SetString(APTDABASE_KEY, _events.ToList().ToJson());
+        }
+
         private static async Task<bool> SendEvents(List<Event> events)
         {
             var webRequest = _webRequestHelper.CreateWebRequest(_apiURL, _appKey, _environment, events.ToJson());

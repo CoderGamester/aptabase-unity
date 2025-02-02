@@ -4,6 +4,8 @@ namespace AptabaseSDK
     {
         public void Enqueue(Event data);
 
-        public void Flush();
+        public Task Flush();
+        
+        public void FlushOrSaveToDisk();
     }
 }

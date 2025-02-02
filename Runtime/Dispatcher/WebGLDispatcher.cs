@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AptabaseSDK.TinyJson;
+using UnityEngine;
 
 namespace AptabaseSDK
 {
     public class WebGLDispatcher: IDispatcher
     {
         private const string EVENT_ENDPOINT = "/api/v0/event";
+        private const string APTDABASE_KEY = "AptabaseKey";
         
         private static string _apiURL;
         private static WebRequestHelper _webRequestHelper;
@@ -31,7 +34,6 @@ namespace AptabaseSDK
         public void Enqueue(Event data)
         {
             _events.Enqueue(data);
-            Flush();
         }
         
         private void Enqueue(List<Event> data)
@@ -40,7 +42,7 @@ namespace AptabaseSDK
                 _events.Enqueue(eventData);
         }
 
-        public async void Flush()
+        public async Task Flush()
         {
             if (_flushInProgress || _events.Count <= 0)
                 return;
@@ -68,6 +70,13 @@ namespace AptabaseSDK
                 Enqueue(failedEvents);
 
             _flushInProgress = false;
+        }
+
+        public async void FlushOrSaveToDisk()
+        {
+            await Flush();
+            
+            PlayerPrefs.SetString(APTDABASE_KEY, _events.ToList().ToJson());
         }
         
         private static async Task<bool> SendEvent(Event eventData)
