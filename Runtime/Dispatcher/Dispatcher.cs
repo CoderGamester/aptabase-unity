@@ -78,7 +78,7 @@ namespace AptabaseSDK
             _flushInProgress = false;
         }
 
-        public async void FlushOrSaveToDisk()
+        public async Task FlushOrSaveToDisk()
         {
             await Flush();
             

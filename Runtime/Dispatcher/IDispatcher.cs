@@ -1,11 +1,13 @@
+using System.Threading.Tasks;
+
 namespace AptabaseSDK
 {
     public interface IDispatcher
     {
-        public void Enqueue(Event data);
+        void Enqueue(Event data);
 
-        public Task Flush();
+        Task Flush();
         
-        public void FlushOrSaveToDisk();
+        Task FlushOrSaveToDisk();
     }
 }
