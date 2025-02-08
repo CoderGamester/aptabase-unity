@@ -81,6 +81,8 @@ namespace AptabaseSDK
         
         private static async Task<bool> SendEvent(Event eventData)
         {
+            if(Application.internetReachability == NetworkReachability.NotReachable) return false;
+            
             var webRequest = _webRequestHelper.CreateWebRequest(_apiURL, _appKey, _environment, eventData.ToJson());
             var result = await _webRequestHelper.SendWebRequestAsync(webRequest);
             return result;
