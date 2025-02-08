@@ -23,14 +23,18 @@ namespace AptabaseSDK
         
         public Dispatcher(string appKey, string baseURL, EnvironmentInfo env)
         {
+            var cacheEvents = PlayerPrefs.GetString(APTDABASE_KEY).FromJson<List<Event>>();
+
             //create event queue
-            _events = new Queue<Event>(PlayerPrefs.GetString("AptabaseEvents").FromJson<List<Event>>() ?? new List<Event>());
+            _events = new Queue<Event>(cacheEvents ?? new List<Event>());
             
             //web request setup information
             _apiURL = $"{baseURL}{EVENTS_ENDPOINT}";
             _appKey = appKey;
             _environment = env;
             _webRequestHelper = new WebRequestHelper();
+
+            PlayerPrefs.DeleteKey(APTDABASE_KEY);
         }
         
         public void Enqueue(Event data)
