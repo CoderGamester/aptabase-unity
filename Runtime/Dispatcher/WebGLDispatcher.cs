@@ -9,7 +9,7 @@ namespace AptabaseSDK
     public class WebGLDispatcher: IDispatcher
     {
         private const string EVENT_ENDPOINT = "/api/v0/event";
-        private const string APTDABASE_KEY = "AptabaseKey";
+        private const string APTABASE_KEY = "aptabase_key";
         
         private static string _apiURL;
         private static WebRequestHelper _webRequestHelper;
@@ -21,7 +21,7 @@ namespace AptabaseSDK
         
         public WebGLDispatcher(string appKey, string baseURL, EnvironmentInfo env)
         {
-            var cacheEvents = PlayerPrefs.GetString(APTDABASE_KEY).FromJson<List<Event>>();
+            var cacheEvents = PlayerPrefs.GetString(APTABASE_KEY).FromJson<List<Event>>();
 
             //create event queue
             _events = new Queue<Event>(cacheEvents ?? new List<Event>());
@@ -32,7 +32,7 @@ namespace AptabaseSDK
             _environment = env;
             _webRequestHelper = new WebRequestHelper();
 
-            PlayerPrefs.DeleteKey(APTDABASE_KEY);
+            PlayerPrefs.DeleteKey(APTABASE_KEY);
         }
         
         public void Enqueue(Event data)
@@ -80,7 +80,7 @@ namespace AptabaseSDK
         {
             await Flush();
             
-            PlayerPrefs.SetString(APTDABASE_KEY, _events.ToList().ToJson());
+            PlayerPrefs.SetString(APTABASE_KEY, _events.ToList().ToJson());
         }
         
         private static async Task<bool> SendEvent(Event eventData)

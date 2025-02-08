@@ -9,7 +9,7 @@ namespace AptabaseSDK
     public class Dispatcher: IDispatcher
     {
         private const string EVENTS_ENDPOINT = "/api/v0/events";
-        private const string APTDABASE_KEY = "AptabaseKey";
+        private const string APTABASE_KEY = "aptabase_key";
         
         private const int MAX_BATCH_SIZE = 25;
         
@@ -23,7 +23,7 @@ namespace AptabaseSDK
         
         public Dispatcher(string appKey, string baseURL, EnvironmentInfo env)
         {
-            var cacheEvents = PlayerPrefs.GetString(APTDABASE_KEY).FromJson<List<Event>>();
+            var cacheEvents = PlayerPrefs.GetString(APTABASE_KEY).FromJson<List<Event>>();
 
             //create event queue
             _events = new Queue<Event>(cacheEvents ?? new List<Event>());
@@ -34,7 +34,7 @@ namespace AptabaseSDK
             _environment = env;
             _webRequestHelper = new WebRequestHelper();
 
-            PlayerPrefs.DeleteKey(APTDABASE_KEY);
+            PlayerPrefs.DeleteKey(APTABASE_KEY);
         }
         
         public void Enqueue(Event data)
@@ -86,7 +86,7 @@ namespace AptabaseSDK
         {
             await Flush();
             
-            PlayerPrefs.SetString(APTDABASE_KEY, _events.ToList().ToJson());
+            PlayerPrefs.SetString(APTABASE_KEY, _events.ToList().ToJson());
         }
 
         private static async Task<bool> SendEvents(List<Event> events)
