@@ -21,10 +21,11 @@ namespace AptabaseSDK
         
         public WebGLDispatcher(string appKey, string baseURL, EnvironmentInfo env)
         {
-            var cacheEvents = PlayerPrefs.GetString(APTABASE_KEY).FromJson<List<Event>>();
+            var cachedEventsJson = PlayerPrefs.GetString(APTABASE_KEY);
+            var cacheEvents = string.IsNullOrEmpty(cachedEventsJson) ? new List<Event>() : cachedEventsJson.FromJson<List<Event>>();
 
             //create event queue
-            _events = new Queue<Event>(cacheEvents ?? new List<Event>());
+            _events = new Queue<Event>(cacheEvents);
             
             //web request setup information
             _apiURL = $"{baseURL}{EVENT_ENDPOINT}";
